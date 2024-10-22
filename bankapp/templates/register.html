@@ -1,0 +1,10 @@
+<h2>Register</h2>
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<form id='add_user' action="add_user/" method="post">
+  {% csrf_token %}
+  <p>Username:<br>
+    <input type="text" id="username" name="username"></p>
+<p>Password:<br>
+<input type="password" id="password" name="password"> </p>
+<input type="submit" value="Register">
+</form>
