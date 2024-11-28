@@ -3,7 +3,8 @@
     <head>
         <title>Bank Transfer</title>
     </head>
-
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
 
     <body>
 		<h1>Your account</h1>
@@ -23,7 +24,8 @@
 		
         <h2>Transfer money</h2>
 
-        <form action='transfer/' method="GET">
+        <form action='transfer/' method="POST">
+            {% csrf_token %}
             <span>To:</span><br/>
             <select name="to">
 			{% for account in accounts %}
@@ -33,11 +35,9 @@
 
             <span>Amount:</span><br/>
             <input type="number" name="amount"/><br/>
-
-            <input type="submit" value="Transfer"/>
+            {% buttons %}
+            <button type="submit" class="btn btn-primary" id="Transfer">Transfer</button>
+            {% endbuttons %}
         </form>
-    </body>
-
-
     </body>
 </html>

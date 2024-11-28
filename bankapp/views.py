@@ -1,58 +1,53 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, password_validation
+from django.contrib.auth import authenticate, password_validation, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.core.exceptions import ValidationError
 from .models import Account
 import sqlite3
 
-def homePageView(request):
+#fix to flaw 1
+#@login_required
+def homePageView(request, username):
 
-    if request.session.get('user'):
-        username = request.session.get('user') 
-        #username = User.objects.get(username=request.session.get('user'))
-        accounts = Account.objects.exclude(username=request.session.get('user'))
-        balance = Account.objects.get(username=request.session.get('user'))
-        #accounts = Account.objects.exclude(user=User.objects.get(username=request.session.get('user')))
-        #balance = Account.objects.get(user=User.objects.get(username=request.session.get('user')))
-        return render(request, 'index.html', {'accounts': accounts, 'user':username, 'balance': balance.balance})
-    return render(request, 'login.html')
+    accounts = Account.objects.exclude(username=username)
+    balance = Account.objects.get(username=username)
+    return render(request, 'index.html', {'accounts': accounts, 'user':username, 'balance': balance.balance})
+    
+    """if not request.user.username == username:
+        return HttpResponse(status=403)
+    accounts = Account.objects.exclude(user=User.objects.get(pk=request.user.id))
+    balance = Account.objects.get(user=User.objects.get(username=username))
+    return render(request, 'index.html', {'accounts': accounts, 'user':username, 'balance': balance.balance})"""
 
+def transferView(request, username):
 
-def transferView(request):
-
-    #fix to flaw 1
-    """if request.method == "POST":
+    if request.method == "POST":
         amount = int(request.POST.get('amount'))
         to = Account.objects.get(username=request.POST.get('to'))
-        user = Account.objects.get(username=request.session.get('user'))
+        user = Account.objects.get(username=username)
 
         user.balance -= amount
         to.balance += amount
 
         user.save()
-        to.save()"""
-    amount = int(request.GET.get('amount'))
-    to = Account.objects.get(username=request.GET.get('to'))
-    user = Account.objects.get(username=request.session.get('user'))
-
-    user.balance -= amount
-    to.balance += amount
-
-    user.save()
-    to.save()
+        to.save()
 	
-    return redirect('/')
+    return HttpResponseRedirect(reverse('bankapp:home', args=(username,)))
 
 def loginView(request):
 
-    if request.method == "POST":
+    if request.method == "GET":
+        return render(request, "login.html")
+
+    elif request.method == "POST":
 
         username = request.POST['username']
         password = request.POST['password']
 
-        #comment out lines 56-60 to fix flaw 2
+        #comment out lines 51-55 to fix flaw 2
         conn = sqlite3.connect('db.sqlite3')
         cursor = conn.cursor()
 
@@ -64,16 +59,16 @@ def loginView(request):
         
         if user:
             request.session['user'] = user[0] #comment this out to fix flaw 2
-            #request.session['user'] = username
-            return HttpResponseRedirect(reverse('bankapp:home'))
+            #login(request, user)
+            return HttpResponseRedirect(reverse('bankapp:home', args=(user[0],)))
+            #return HttpResponseRedirect(reverse('bankapp:home', args=(username,)))
         
-    
-    
     return redirect('/')
 
-def logoutView(request):
+def logoutView(request, username):
     del request.session['user']
-    return HttpResponseRedirect(reverse('bankapp:home'))
+    #logout(request)
+    return HttpResponseRedirect(reverse('bankapp:login'))
 
 def registrationView(request):
 
@@ -82,7 +77,7 @@ def registrationView(request):
         username = request.POST['username']
         password = request.POST['password']
 
-        #comment out lines 86-93 to fix flaw 5
+        #comment out lines 81-88 to fix flaw 5
         conn = sqlite3.connect('db.sqlite3')
         cursor = conn.cursor()
 

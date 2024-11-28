@@ -4,10 +4,11 @@ from .views import homePageView, transferView, loginView, logoutView, registrati
 
 app_name = 'bankapp'
 urlpatterns = [
-    path('', homePageView, name='home'),
+    path('/<username>/', homePageView, name='home'),
     path('login/', loginView, name='login'),
-    path('logout/', logoutView, name='logout'),
-    path('transfer/', transferView, name='transfer'),
+    path('login/login/', loginView),
+    path('/<username>/logout/', logoutView, name='logout'),
+    path('/<username>/transfer/', transferView, name='transfer'),
     path('register/', registrationView, name='register'),
     path('register/add_user/', registrationView)
 ]

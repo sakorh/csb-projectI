@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap4',
 ]
 
 MIDDLEWARE = [
@@ -73,8 +74,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'projectI.wsgi.application'
 
-LOGIN_URL = '/'
-LOGIN_REDIRECT_URL = '/bankapp/'
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
 
 
 # Database
