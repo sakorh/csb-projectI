@@ -44,7 +44,7 @@ def loginView(request):
         username = request.POST['username']
         password = request.POST['password']
 
-        #comment out lines 51-55 to fix flaw 2
+        #comment out lines 48-52 to fix flaw 2
         conn = sqlite3.connect('db.sqlite3')
         cursor = conn.cursor()
 
@@ -74,7 +74,7 @@ def registrationView(request):
         username = request.POST['username']
         password = request.POST['password']
 
-        #comment out lines 81-88 to fix flaw 5
+        #comment out lines 78-85 to fix flaw 5
         conn = sqlite3.connect('db.sqlite3')
         cursor = conn.cursor()
 
