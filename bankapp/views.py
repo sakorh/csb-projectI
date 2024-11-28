@@ -39,10 +39,7 @@ def transferView(request, username):
 
 def loginView(request):
 
-    if request.method == "GET":
-        return render(request, "login.html")
-
-    elif request.method == "POST":
+    if request.method == "POST":
 
         username = request.POST['username']
         password = request.POST['password']
@@ -63,7 +60,7 @@ def loginView(request):
             return HttpResponseRedirect(reverse('bankapp:home', args=(user[0],)))
             #return HttpResponseRedirect(reverse('bankapp:home', args=(username,)))
         
-    return redirect('/')
+    return render(request, 'login.html')
 
 def logoutView(request, username):
     del request.session['user']
@@ -85,7 +82,7 @@ def registrationView(request):
         cursor.execute(sql)
         conn.commit()
 
-        return HttpResponseRedirect(reverse('bankapp:home'))
+        return HttpResponseRedirect(reverse('bankapp:home', args=(username,)))
 
         #fix to flaw 5
         """try:
@@ -98,7 +95,7 @@ def registrationView(request):
                 cursor.execute(sql)
                 conn.commit()
 
-                return HttpResponseRedirect(reverse('bankapp:home'))
+                return HttpResponseRedirect(reverse('bankapp:home', args=(username,)))
 
         except ValidationError:
             return render(request, 'register.html', {

@@ -9,6 +9,6 @@ urlpatterns = [
     path('login/login/', loginView),
     path('/<username>/logout/', logoutView, name='logout'),
     path('/<username>/transfer/', transferView, name='transfer'),
-    path('register/', registrationView, name='register'),
-    path('register/add_user/', registrationView)
+    path('login/register/', registrationView, name='register'),
+    path('login/register/add_user/', registrationView)
 ]
